@@ -10,7 +10,7 @@ class WellBase(BaseModel):
 
 
 class DailyProductionBase(BaseModel):
-    production_date: datetime.date
+    production_date: datetime.date = datetime.date.today()
     qte: float
 
 

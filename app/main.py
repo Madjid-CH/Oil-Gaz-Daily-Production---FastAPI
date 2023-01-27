@@ -25,11 +25,11 @@ async def get_wells(skip: int = 0, limit: int = 100, db: Session = Depends(get_d
     return wells
 
 
-@app.get("/wells/{id}", response_model=schemas.Well)
+@app.get("/wells/{well_id}", response_model=schemas.Well)
 async def get_well_by_id(well_id: int, db: Session = Depends(get_db)):
     db_well = crud.get_well(db, well_id=well_id)
     if db_well is None:
-        raise HTTPException(status_code=404, detail="Well not found")
+        raise HTTPException(status_code=400, detail="Well not found")
     return db_well
 
 
@@ -43,7 +43,7 @@ async def get_materials(skip: int = 0, limit: int = 100, db: Session = Depends(g
 async def get_material_by_name(name: str, db: Session = Depends(get_db)):
     db_material = crud.get_material_by_name(db, name=name)
     if db_material is None:
-        raise HTTPException(status_code=404, detail="Material not found")
+        raise HTTPException(status_code=400, detail="Material not found")
     return db_material
 
 
@@ -51,7 +51,7 @@ async def get_material_by_name(name: str, db: Session = Depends(get_db)):
 async def get_daily_productions_by_well(well_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     db_well = crud.get_well(db, well_id=well_id)
     if db_well is None:
-        raise HTTPException(status_code=404, detail="Well not found")
+        raise HTTPException(status_code=400, detail="Well not found")
 
     daily_productions = crud.get_daily_production_by_well(db, well_id, skip, limit)
     return daily_productions
@@ -97,19 +97,23 @@ async def create_production(well_id: int,
 
 
 @app.delete("/productions/delete/{material_name}/{well_id}/{prod_date}")
-async def delete_post_for_user(material_name: str,
-                               well_id: int,
-                               prod_date: datetime.date,
-                               db: Session = Depends(get_db)):
-    db_prod = (db.query(models.DailyProduction)
-               .filter(
-        models.DailyProduction.well_id == well_id,
-        models.Material.name == material_name,
-        models.DailyProduction.prod_date == prod_date
-    ).first())
+async def delete_production(material_name: str,
+                            well_id: int,
+                            prod_date: datetime.date,
+                            db: Session = Depends(get_db)):
+    db_prod = (
+        db.query(models.DailyProduction)
+        .join(models.Material)
+        .filter(
+            models.DailyProduction.well_id == well_id,
+            models.Material.name == material_name,
+            models.DailyProduction.production_date == datetime.datetime(prod_date.year, prod_date.month, prod_date.day)
+        ).first()
+    )
     if db_prod is None:
-        raise HTTPException(status_code=404, detail="Well or Material or DailProduction not found")
+        raise HTTPException(status_code=400, detail="Well or Material or DailProduction not found")
     crud.delete_production(db=db, prod=db_prod)
+
     return {"msg": "Successfully Deleted"}
 
 
@@ -117,7 +121,7 @@ async def delete_post_for_user(material_name: str,
 async def update_user(id: int, well: schemas.Well, db: Session = Depends(get_db)):
     db_well = crud.get_well(db, well_id=id)
     if db_well is None:
-        raise HTTPException(status_code=404, detail="Well not found")
+        raise HTTPException(status_code=400, detail="Well not found")
     well.id = id
     return crud.update_well(db=db, well=well)
 

@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='apis',
+setup(name='gaz_oil_apis',
       version='0.1',
       description='oil-gaz daily production',
       url='https://github.com/Madjid-CH/Oil-Gaz-Daily-Production---FastAPI.git',

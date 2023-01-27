@@ -1,6 +1,9 @@
+import datetime
+
 from sqlalchemy.orm import Session
 
-import models, schemas
+import models
+import schemas
 
 
 def get_well(db: Session, well_id: int):
@@ -62,12 +65,12 @@ def get_material_by_name(db, name):
     return db.query(models.Material).filter(models.Material.name == name).first()
 
 
-def get_daily_production_by_date(db, date, skip, limit):
-    return db.query(models.DailyProduction) \
-        .filter(models.DailyProduction.production_date == date) \
-        .offset(skip) \
-        .limit(limit) \
-        .all()
+def get_daily_production_by_date(db, date: datetime.date, skip, limit):
+    return (db.query(models.DailyProduction)
+            .filter(models.DailyProduction.production_date == datetime.datetime(date.year, date.month, date.day))
+            .offset(skip)
+            .limit(limit)
+            .all())
 
 
 def create_material(db, material):
