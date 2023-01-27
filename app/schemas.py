@@ -3,7 +3,7 @@ import datetime
 from pydantic import BaseModel
 
 
-# Create Pydantic Base models with common attributes while creating or reading data.
+# Create Pydantic Base models with common attributes while creating or reading database.
 class WellBase(BaseModel):
     name: str
     field: str
@@ -19,7 +19,7 @@ class MaterialBase(BaseModel):
     uom: str
 
 
-# create Pydantic models that will be used when reading data (returning it from the API)
+# create Pydantic models that will be used when reading database (returning it from the API)
 class Well(WellBase):
     id: int
 
