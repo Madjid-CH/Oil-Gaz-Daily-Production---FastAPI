@@ -57,7 +57,8 @@ Where:
 | PUT | /wells/update/{id} | Update a well with a given id |
 
 ## Getting Started
-Install the requirements and run the following command:
+Install the requirements and run the following commands:
 ```bash
+pip install .
 uvicorn app.main:app
 ```
