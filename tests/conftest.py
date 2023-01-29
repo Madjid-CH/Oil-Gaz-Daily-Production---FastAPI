@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from models import Well, Material, DailyProduction
+from app.models import Well, Material, DailyProduction
 from database.database import SessionLocal
 
 

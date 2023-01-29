@@ -1,9 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
 
-import models
+
+from app import models
 from database.database import engine
-from routes import wells_api, materials_api, productions_api
+from app.routes import wells_api, materials_api, productions_api
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()

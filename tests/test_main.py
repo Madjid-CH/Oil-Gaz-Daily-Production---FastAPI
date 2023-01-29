@@ -23,7 +23,7 @@ def test_get_wells_by_id():
 
 def test_getting_non_existing_well():
     response = client.get("/wells/10")
-    assert response.status_code == 400
+    assert response.status_code == 404
     assert response.json() == {
         "detail": "Well not found"
     }
@@ -61,7 +61,7 @@ def test_get_daily_productions_by_well():
 
 def test_get_daily_productions_by_non_existing_well():
     response = client.get("/Productions/wells/10")
-    assert response.status_code == 400
+    assert response.status_code == 404
     assert response.json() == {
         "detail": "Well not found"
     }
@@ -162,7 +162,7 @@ def test_delete_non_existing_daily_production():
     response = client.delete(
         "/productions/delete/oil/3/2023-01-11",
     )
-    assert response.status_code == 400
+    assert response.status_code == 404
     assert response.json() == {'detail': 'Well or Material or DailProduction not found'}
 
 

@@ -1,11 +1,9 @@
 import datetime
 
-from fastapi import Depends, HTTPException, APIRouter
+from fastapi import Depends, HTTPException, APIRouter, status
 from sqlalchemy.orm import Session
 
-import crud
-import models
-import schemas
+from app import crud, schemas, models
 from database.database import get_db
 
 router = APIRouter()
@@ -15,7 +13,7 @@ router = APIRouter()
 async def get_daily_productions_by_well(well_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     db_well = crud.get_well(db, well_id=well_id)
     if db_well is None:
-        raise HTTPException(status_code=400, detail="Well not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Well not found")
 
     daily_productions = crud.get_daily_production_by_well(db, well_id, skip, limit)
     return daily_productions
@@ -51,7 +49,7 @@ async def delete_production(material_name: str,
         ).first()
     )
     if db_prod is None:
-        raise HTTPException(status_code=400, detail="Well or Material or DailProduction not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Well or Material or DailProduction not found")
     crud.delete_production(db=db, prod=db_prod)
 
     return {"msg": "Successfully Deleted"}

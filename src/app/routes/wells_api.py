@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-import crud
-import schemas
+from app import crud, schemas
 from database.database import get_db
-from schemas import Well
+from app.schemas import Well
 
 router = APIRouter()
 
@@ -19,7 +18,7 @@ async def get_wells(skip: int = 0, limit: int = 100, db: Session = Depends(get_d
 async def get_well_by_id(well_id: int, db: Session = Depends(get_db)):
     db_well = crud.get_well(db, well_id=well_id)
     if db_well is None:
-        raise HTTPException(status_code=400, detail="Well not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Well not found")
     return db_well
 
 
@@ -27,7 +26,7 @@ async def get_well_by_id(well_id: int, db: Session = Depends(get_db)):
 async def create_well(well: schemas.WellCreate, db: Session = Depends(get_db)):
     db_well = crud.get_well_by_name(db, name=well.name)
     if db_well:
-        raise HTTPException(status_code=400, detail="Well already exists")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Well already exists")
 
     if well.field not in ("SOUTH", "NORTH", "CENTER"):
         raise HTTPException(status_code=400, detail="Field must be SOUTH, NORTH or CENTER")
@@ -39,6 +38,6 @@ async def create_well(well: schemas.WellCreate, db: Session = Depends(get_db)):
 async def update_user(id: int, well: schemas.Well, db: Session = Depends(get_db)):
     db_well = crud.get_well(db, well_id=id)
     if db_well is None:
-        raise HTTPException(status_code=400, detail="Well not found")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Well not found")
     well.id = id
     return crud.update_well(db=db, well=well)

@@ -1,0 +1,11 @@
+sqlalchemy
+uvicorn
+fastapi
+pydantic
+httpx
+pytest
+setuptools
+
+[testing]
+pytest>=6.0
+pytest-cov>=2.0
