@@ -1,3 +1,5 @@
+![Tests](https://github.com/Madjid-CH/Oil-Gaz-Daily-Production---FastAPI/actions/workflows/tests.yml/badge.svg)
+
 # A RESTFUL FastAPIs for Oil & Gaz Daily Production
 
 The APIs are related to an oil company core activities, which includes, in particular, Oil and Gaz Daily Production.
